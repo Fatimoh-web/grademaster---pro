@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GradeMaster Pro - Instant University GPA Calculator</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #10b981;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #818cf8 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 800px) {
+            .dashboard-grid {
+                grid-template-columns: 1.6fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .card h2 i {
+            color: var(--primary);
+        }
+
+        /* Form Inputs */
+        .input-group {
+            display: grid;
+            grid-template-columns: 3fr 1.2fr 1.5fr auto;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 700px) {
+            .input-group {
+                grid-template-columns: 1fr;
+                background: rgba(255,255,255,0.03);
+                padding: 15px;
+                border-radius: 12px;
+                border: 1px solid var(--border);
+                gap: 10px;
+            }
+        }
+
+        input, select {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 14px 20px;
+            width: 100%;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-delete {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            padding: 12px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-add {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+        }
+
+        /* Results / Scorecard */
+        .result-box {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .gpa-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .gpa-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .stats-detail span:last-child {
+            font-weight: 700;
+        }
+
+        /* Sell / Monetize Banner */
+        .sell-banner {
+            margin-top: 30px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .sell-banner h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .sell-banner p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-paystack {
+            background-color: var(--accent);
+            color: white;
+            padding: 14px 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-paystack:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>GradeMaster Pro</h1>
+            <p>The Ultimate 5-Point Scale University GPA Calculator & Tracker</p>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard-grid">
+            <!-- Left Side: Course Input Form -->
+            <div class="card">
+                <h2><i class="fa-solid fa-book-open"></i> Enter Your Courses</h2>
+                <div id="course-list">
+                    <!-- Dynamic rows will appear here -->
+                </div>
+                
+                <button class="btn-add" onclick="addCourseRow()">
+                    <i class="fa-solid fa-plus"></i> Add Another Course
+                </button>
+
+                <button class="btn-primary" onclick="calculateGPA()">
+                    <i class="fa-solid fa-calculator"></i> Calculate GPA Now
+                </button>
+            </div>
+
+            <!-- Right Side: Results & Summary -->
+            <div class="card">
+                <h2><i class="fa-solid fa-chart-pie"></i> Semester Summary</h2>
+                
+                <div class="result-box">
+                    <div class="gpa-score" id="gpa-result">0.00</div>
+                    <div class="gpa-label">Cumulative GPA (5.0 Scale)</div>
+                </div>
+
+                <div class="stats-detail">
+                    <span style="color: var(--text-muted);">Total Units Registered:</span>
+                    <span id="total-units">0</span>
+                </div>
+                <div class="stats-detail">
+                    <span style="color: var(--text-muted);">Total Quality Points:</span>
+                    <span id="total-points">0</span>
+                </div>
+                <div class="stats-detail">
+                    <span style="color: var(--text-muted);">Courses Computed:</span>
+                    <span id="total-courses">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monetization / Sell Section -->
+        <div class="sell-banner">
+            <h3>Want to own this web app or unlock PDF Report Export?</h3>
+            <p>Get the full source code package or unlock advanced semester archiving for just ₦1,500!</p>
+            <!-- Your Live Paystack Link Connected -->
+            <a href="https://paystack.shop/pay/tplg98ye0c" class="btn-paystack" target="_blank">
+                <i class="fa-solid fa-lock-open"></i> Get Pro Access (₦1,500)
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const gradePoints = {
+            'A': 5,
+            'B': 4,
+            'C': 3,
+            'D': 2,
+            'E': 1,
+            'F': 0
+        };
+
+        window.onload = function() {
+            for (let i = 0; i < 3; i++) {
+                addCourseRow();
+            }
+        };
+
+        function addCourseRow() {
+            const container = document.getElementById('course-list');
+            const rowId = Date.now() + Math.random();
+            
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'input-group';
+            rowDiv.setAttribute('id', `row-${rowId}`);
+            
+            rowDiv.innerHTML = `
+                <input type="text" placeholder="Course Name (e.g. MTH 101)" class="course-name">
+                <input type="number" placeholder="Units" min="1" max="10" class="course-units">
+                <select class="course-grade">
+                    <option value="" disabled selected>Grade</option>
+                    <option value="A">A (5)</option>
+                    <option value="B">B (4)</option>
+                    <option value="C">C (3)</option>
+                    <option value="D">D (2)</option>
+                    <option value="E">E (1)</option>
+                    <option value="F">F (0)</option>
+                </select>
+                <button class="btn-delete" onclick="removeCourseRow('row-${rowId}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
+            
+            container.appendChild(rowDiv);
+        }
+
+        function removeCourseRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        function calculateGPA() {
+            const unitInputs = document.querySelectorAll('.course-units');
+            const gradeSelects = document.querySelectorAll('.course-grade');
+            
+            let totalUnits = 0;
+            let totalQualityPoints = 0;
+            let courseCount = 0;
+
+            for (let i = 0; i < unitInputs.length; i++) {
+                const units = parseFloat(unitInputs[i].value);
+                const grade = gradeSelects[i].value;
+
+                if (!isNaN(units) && grade in gradePoints) {
+                    totalUnits += units;
+                    totalQualityPoints += units * gradePoints[grade];
+                    courseCount++;
+                }
+            }
+
+            const gpa = totalUnits > 0 ? (totalQualityPoints / totalUnits).toFixed(2) : '0.00';
+
+            document.getElementById('gpa-result').innerText = gpa;
+            document.getElementById('total-units').innerText = totalUnits;
+            document.getElementById('total-points').innerText = totalQualityPoints;
+            document.getElementById('total-courses').innerText = courseCount;
+        }
+    </script>
+
+</body>
+</html>
